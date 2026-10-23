@@ -1,0 +1,24 @@
+services:
+  website:
+    build:
+      context: .
+      target: runtime
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      DATA_DIR: /data
+    ports:
+      - "3000:3000"
+    volumes:
+      - website-data:/data
+    security_opt:
+      - no-new-privileges:true
+
+# Keep this existing volume key so upgrades reuse the previous Compose volume.
+# Run a single instance: the payment JSON store must have exactly one writer.
+volumes:
+  website-data:
